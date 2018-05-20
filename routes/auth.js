@@ -4,6 +4,7 @@ const router = express.Router();
 const User = require('../models').User;
 const bcrypt = require('bcrypt');
 const jwtSign = promisify(require('jsonwebtoken').sign);
+const jwtVerify = promisify(require('jsonwebtoken').verify);
 const config = require('../config');
 
 router.post('/', (req, res) => {
@@ -39,4 +40,28 @@ function notAuthorized(res) {
     res.send('Not authorized.', 403);
 }
 
-module.exports = router;
+function authorizeMiddleware(req, res, next) {
+    const token = req.headers.authorization && req.headers.authorization.match(/^Bearer ([a-zA-Z0-9.]+)$/)[1];
+    if (token) {
+        jwtVerify(token, config.jwtSecret).then(data => {
+            User.findById(data.id).then(user => {
+                if (user) {
+                    res.locals.User = user;
+                }
+                next();
+            });
+        });
+    } else {
+        next();
+    }
+}
+
+function requireAuth(req, res, next) {
+    if (!res.locals.User) {
+        res.send('Authorization required', 401);
+    } else {
+        next();
+    }
+}
+
+module.exports = {default: router, authorizeMiddleware, requireAuth};
