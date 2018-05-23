@@ -14,8 +14,7 @@ const dishValidation = [
         .exists()
         .isLength({min: 1, max: 255}),
     check('img')
-        .exists()
-        .isURL(),
+        .exists(),
     check('price')
         .exists()
         .isNumeric(),
@@ -25,7 +24,6 @@ const dishValidation = [
 ];
 
 router.get('/', function (req, res) {
-    console.log(req.query.categoryId);
     Dish.findAll({where: {categoryId: req.query.categoryId}}).then(dishes => res.send(dishes));
 });
 

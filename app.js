@@ -10,6 +10,7 @@ const users = require('./routes/users');
 const categories = require('./routes/categories');
 const dishes = require('./routes/dishes');
 const auth = require('./routes/auth');
+const images = require('./routes/images');
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use('/users', users);
 app.use('/categories', categories);
 app.use('/dishes', dishes);
 app.use('/auth', auth.default);
+app.use('/images', images);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -51,7 +53,7 @@ app.use(function (err, req, res, next) {
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : err;
     res.locals.stack = err.stack;
-
+console.log(err);
     // render the error page
     res.status(err.status || 500);
     res.json(res.locals);

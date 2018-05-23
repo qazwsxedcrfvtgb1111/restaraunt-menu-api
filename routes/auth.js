@@ -41,8 +41,8 @@ function notAuthorized(res) {
 }
 
 function authorizeMiddleware(req, res, next) {
-    const tokenGroup = req.headers.authorization && req.headers.authorization.match(/^Bearer ([a-zA-Z0-9.\-]+)$/);
-    if (tokenGroup !== undefined && tokenGroup.length > 1) {
+    const tokenGroup = req.headers.authorization && req.headers.authorization.match(/^Bearer ([a-zA-Z0-9.\-_]+)$/);
+    if (tokenGroup !== null && tokenGroup !== undefined && tokenGroup.length > 1) {
         const token = tokenGroup[1];
 
         jwtVerify(token, config.jwtSecret).then(data => {

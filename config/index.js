@@ -4,7 +4,8 @@ const config = {
     development: {
         dialect: 'sqlite',
         storage: './db.development.sqlite',
-        jwtSecret: 'test'
+        jwtSecret: 'test',
+        maxImageSize: 2000000,
     },
     test: {
         dialect: 'sqlite',
@@ -17,6 +18,7 @@ const config = {
         host: process.env.DB_HOSTNAME,
         jwtSecret: process.env.JWT_SECRET,
         dialect: 'mysql',
+        maxImageSize: 2000000,
     }
 };
 
