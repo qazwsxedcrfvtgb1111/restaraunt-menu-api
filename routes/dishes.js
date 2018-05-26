@@ -14,7 +14,6 @@ const dishValidation = [
         .exists()
         .isLength({min: 1, max: 255}),
     check('img')
-        .isURL()
         .isLength({min: 1, max: 255})
         .exists(),
     check('price')
