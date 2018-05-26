@@ -14,6 +14,7 @@ const categoryValidation = [
         .isLength({min: 1, max: 255}),
     check('img')
         .exists()
+        .isLength({min: 1, max: 255})
 ];
 
 router.get('/', (req, res) => {
