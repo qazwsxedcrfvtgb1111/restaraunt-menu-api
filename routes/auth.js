@@ -14,10 +14,10 @@ router.post('/', (req, res) => {
         }
     }).then(user => {
         if (user) {
-            bcrypt.compare(req.body.password, user.password,).then(correct => {
+            bcrypt.compare(req.body.password, user.password).then(correct => {
                 if (correct) {
                     jwtSign({id: user.id}, config.jwtSecret).then(token => {
-                        res.send({token})
+                        res.json({token})
                     })
                         .catch(err => console.log(err));
                 } else {
@@ -31,13 +31,11 @@ router.post('/', (req, res) => {
 });
 
 router.post('/create', (req, res) => {
-    bcrypt.hash(req.body.password, 10).then(hash => {
-        User.create({name: req.body.username, password: hash, email: 'test@test'}).then(user => res.send(user));
-    }).catch(err => console.log(err));
+    createUser({name: req.body.name, password: req.body.password}, res)
 });
 
 function notAuthorized(res) {
-    res.send('Not authorized.', 403);
+    res.json('Not authorized.', 403);
 }
 
 function authorizeMiddleware(req, res, next) {
@@ -60,10 +58,16 @@ function authorizeMiddleware(req, res, next) {
 
 function requireAuth(req, res, next) {
     if (!res.locals.User) {
-        res.send('Authorization required', 401);
+        res.json('Authorization required', 401);
     } else {
         next();
     }
 }
 
-module.exports = {default: router, authorizeMiddleware, requireAuth};
+function createUser({name, password}, res) {
+    bcrypt.hash(password, 10).then(hash => {
+        User.create({name, password: hash, email: 'test@test'}).then(user => res.json(user));
+    }).catch(err => console.log(err));
+}
+
+module.exports = {default: router, authorizeMiddleware, requireAuth, createUser};
